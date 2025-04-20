@@ -130,53 +130,53 @@ Each step maintains deep context from previous interactions, including user pref
 ```mermaid
 sequenceDiagram
     participant User
-    participant Extension (main.js)
-    participant DecisionMaking (decision-making.js)
-    participant Perception (perception.js)
-    participant Action (action.js)
-    participant Memory (memory.js)
+    participant Extension as "Extension (main.js)"
+    participant DecisionMaking as "DecisionMaking (decision-making.js)"
+    participant Perception as "Perception (perception.js)"
+    participant Action as "Action (action.js)"
+    participant Memory as "Memory (memory.js)"
     participant Spoonacular
     participant DeliveryService
 
-    User->>Extension (main.js): Set Prefs & Input Ingredients
-    Extension (main.js)->>DecisionMaking (decision-making.js): handleIngredientInput(data)
-    DecisionMaking (decision-making.js)->>Memory (memory.js): Get API Keys, Update History
-    DecisionMaking (decision-making.js)->>Perception (perception.js): runLLMAnalysis(query1, stage1, ...)
-    Perception (perception.js)-->>DecisionMaking (decision-making.js): LLM Result + Metadata
-    DecisionMaking (decision-making.js)->>Memory (memory.js): Update History (LLM Resp)
-    DecisionMaking (decision-making.js)->>Action (action.js): fetchRecipes(...)
-    Action (action.js)->>Spoonacular: API Call
-    Spoonacular-->>Action (action.js): Recipe Data
-    Action (action.js)-->>DecisionMaking (decision-making.js): API Result
-    DecisionMaking (decision-making.js)->>Memory (memory.js): Update History (Tool Result)
-    DecisionMaking (decision-making.js)->>Action (action.js): displayRecipes(...) / displayError(...)
+    User->>Extension: Set Prefs & Input Ingredients
+    Extension->>DecisionMaking: handleIngredientInput(data)
+    DecisionMaking->>Memory: Get API Keys, Update History
+    DecisionMaking->>Perception: runLLMAnalysis(query1, stage1, ...)
+    Perception-->>DecisionMaking: LLM Result + Metadata
+    DecisionMaking->>Memory: Update History (LLM Resp)
+    DecisionMaking->>Action: fetchRecipes(...)
+    Action->>Spoonacular: API Call
+    Spoonacular-->>Action: Recipe Data
+    Action-->>DecisionMaking: API Result
+    DecisionMaking->>Memory: Update History (Tool Result)
+    DecisionMaking->>Action: displayRecipes(...) / displayError(...)
 
-    User->>Extension (main.js): Select Recipe (via Action's callback)
-    Extension (main.js)->>DecisionMaking (decision-making.js): handleRecipeSelection(data)
-    %% ... Subsequent steps follow similar pattern ...
-    DecisionMaking (decision-making.js)->>Perception (perception.js): runLLMAnalysis(query2, stage2, ...)
-    DecisionMaking (decision-making.js)->>Action (action.js): fetchRecipeDetails(...)
-    DecisionMaking (decision-making.js)->>Action (action.js): displayMissingIngredients(...)
+    User->>Extension: Select Recipe (via Action's callback)
+    Extension->>DecisionMaking: handleRecipeSelection(data)
+    Note over DecisionMaking,DeliveryService: Subsequent steps follow similar pattern
+    DecisionMaking->>Perception: runLLMAnalysis(query2, stage2, ...)
+    DecisionMaking->>Action: fetchRecipeDetails(...)
+    DecisionMaking->>Action: displayMissingIngredients(...)
 
-    User->>Extension (main.js): Choose Delivery Method & Click Send
-    Extension (main.js)->>DecisionMaking (decision-making.js): handleSendListRequest(data)
-    DecisionMaking (decision-making.js)->>Perception (perception.js): runLLMAnalysis(query3, stage3, ...)
-    DecisionMaking (decision-making.js)->>Action (action.js): sendList(...)
-    Action (action.js)->>DeliveryService: API Call
-    DeliveryService-->>Action (action.js): Send Confirmation
-    Action (action.js)-->>DecisionMaking (decision-making.js): Send Result
-    DecisionMaking (decision-making.js)->>Action (action.js): displayConfirmation(...) / displayError(...)
+    User->>Extension: Choose Delivery Method & Click Send
+    Extension->>DecisionMaking: handleSendListRequest(data)
+    DecisionMaking->>Perception: runLLMAnalysis(query3, stage3, ...)
+    DecisionMaking->>Action: sendList(...)
+    Action->>DeliveryService: API Call
+    DeliveryService-->>Action: Send Confirmation
+    Action-->>DecisionMaking: Send Result
+    DecisionMaking->>Action: displayConfirmation(...) / displayError(...)
 ```
 
 ### Enhanced Error Handling Flow
 
 ```mermaid
 flowchart TD
-    A[User Action] --> B{Decision Making Module}
-    B --> C{Perception (LLM)}
+    A[User Action] --> B[Decision Making Module]
+    B --> C[Perception (LLM)]
     C --> D{LLM Self-Check Ok?}
     D -- Error Found --> E[Show LLM Error via Action]
-    D -- No Errors --> F{Action (API Call)}
+    D -- No Errors --> F[Action (API Call)]
     F --> G{API Call Success?}
     G -- Yes --> H[Normal Flow via DecisionMaking]
     G -- No --> I{Retry Count < Max?}
