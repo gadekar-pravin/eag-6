@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Logs
+*.log
+logs/
+
+# Build output
+dist/
+build/
+
+# Environment variables (VERY IMPORTANT!)
+.env*
+!.env.example
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+.idea/

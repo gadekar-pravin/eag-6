@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Suggester</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Recipe Suggester</h1>
+
+        <!-- Step 1: Input Collection -->
+        <div id="step1" class="step active">
+            <h2>What ingredients do you have?</h2>
+
+            <!-- ** START: Added Preference Section ** -->
+            <div class="preference-section">
+                <label for="foodTypePreference">Food Preference:</label>
+                <select id="foodTypePreference" name="foodType">
+                    <option value="any" selected>Any</option>
+                    <option value="vegetarian">Vegetarian</option>
+                    <option value="vegan">Vegan</option>
+                    <!-- Note: Spoonacular uses 'diet'. 'any' covers non-specific cases. -->
+                </select>
+
+                <label for="cuisinePreference">Cuisine Preference:</label>
+                <select id="cuisinePreference" name="cuisine">
+                    <option value="any" selected>Any</option>
+                    <option value="african">African</option>
+                    <option value="american">American</option>
+                    <option value="asian">Asian</option>
+                    <option value="british">British</option>
+                    <option value="cajun">Cajun</option>
+                    <option value="caribbean">Caribbean</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="european">European</option>
+                    <option value="french">French</option>
+                    <option value="german">German</option>
+                    <option value="greek">Greek</option>
+                    <option value="indian">Indian</option>
+                    <option value="irish">Irish</option>
+                    <option value="italian">Italian</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="jewish">Jewish</option>
+                    <option value="korean">Korean</option>
+                    <option value="latin american">Latin American</option>
+                    <option value="mediterranean">Mediterranean</option>
+                    <option value="mexican">Mexican</option>
+                    <option value="middle eastern">Middle Eastern</option>
+                    <option value="nordic">Nordic</option>
+                    <option value="southern">Southern</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="thai">Thai</option>
+                    <option value="vietnamese">Vietnamese</option>
+                </select>
+            </div>
+            <!-- ** END: Added Preference Section ** -->
+
+            <!-- ** START: Added Label for Ingredients ** -->
+            <label for="ingredients">List your ingredients (comma-separated):</label>
+            <!-- ** END: Added Label for Ingredients ** -->
+            <textarea id="ingredients" placeholder="E.g., chicken, rice, soy sauce"></textarea>
+
+            <button id="findRecipes">Find Recipes</button>
+            <div id="loading1" class="loading">
+                <div class="spinner"></div>
+                <p>Searching for recipes...</p>
+            </div>
+        </div>
+
+        <!-- Step 2: Recipe Selection -->
+        <div id="step2" class="step">
+            <h2>Select a Recipe</h2>
+            <div id="recipeResults"></div>
+            <button id="backToStep1" class="back-button">Back</button>
+            <div id="loading2" class="loading">
+                <div class="spinner"></div>
+                <p>Analyzing ingredients...</p>
+            </div>
+        </div>
+
+        <!-- Step 3: Missing Ingredients -->
+        <div id="step3" class="step">
+            <h2>Missing Ingredients</h2>
+            <div id="missingIngredients"></div>
+            <h3>Send Shopping List</h3>
+            <div class="delivery-methods">
+                <div class="delivery-method">
+                    <input type="radio" id="telegram" name="delivery" value="telegram" checked>
+                    <label for="telegram">Telegram</label>
+                    <div id="telegramOptions" class="delivery-options">
+                        <input type="text" id="telegramChatId" placeholder="Telegram Chat ID">
+                        <small>First message @YourBotName, then use /start to begin. Find your Chat ID using @get_id_bot</small>
+                    </div>
+                </div>
+                <div class="delivery-method">
+                    <input type="radio" id="email" name="delivery" value="email">
+                    <label for="email">Email</label>
+                    <div id="emailOptions" class="delivery-options">
+                        <input type="email" id="emailAddress" placeholder="Email Address">
+                    </div>
+                </div>
+            </div>
+            <button id="sendList">Send Shopping List</button>
+            <button id="backToStep2" class="back-button">Back</button>
+            <div id="loading3" class="loading">
+                <div class="spinner"></div>
+                <p>Sending shopping list...</p>
+            </div>
+        </div>
+
+        <!-- Step 4: Confirmation -->
+        <div id="step4" class="step">
+            <h2>Shopping List Sent!</h2>
+            <p id="confirmationMessage"></p>
+            <button id="startOver">Start Over</button>
+        </div>
+
+        <!-- Error Display -->
+        <div id="error" class="error-message"></div>
+    </div>
+
+    <!-- API Key Configuration Section -->
+    <div class="config-button" id="configButton">⚙️</div>
+    <div class="config-panel" id="configPanel">
+        <h3>API Configuration</h3>
+        <div class="config-field">
+            <label for="spoonacularKey">Spoonacular API Key:</label>
+            <input type="text" id="spoonacularKey">
+        </div>
+        <div class="config-field">
+            <label for="telegramBotKey">Telegram Bot API Key:</label>
+            <input type="text" id="telegramBotKey">
+            <small>Create a bot with @BotFather in Telegram, then paste the API token here</small>
+        </div>
+        <div class="config-field">
+            <label for="sendgridKey">SendGrid API Key:</label>
+            <input type="text" id="sendgridKey">
+        </div>
+        <div class="config-field">
+            <label for="geminiKey">Gemini API Key:</label>
+            <input type="text" id="geminiKey">
+            <small>For AI-powered recipe suggestions. Get a key at <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></small>
+        </div>
+        <button id="saveConfig">Save Configuration</button>
+        <div class="help-section">
+            <h4>Telegram Setup Help</h4>
+            <ol>
+                <li>Create a bot with <a href="https://t.me/botfather" target="_blank">@BotFather</a> in Telegram</li>
+                <li>Copy the API token and paste it above</li>
+                <li>Start a chat with your new bot</li>
+                <li>Talk to <a href="https://t.me/get_id_bot" target="_blank">@get_id_bot</a> to find your Chat ID</li>
+                <li>Use this numeric Chat ID in the extension</li>
+            </ol>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
