@@ -47,10 +47,10 @@ The plugin utilizes a 4-step process, starting with user preferences, and incorp
 
 ```mermaid
 flowchart TD
-    A[Set Preferences (Food Type, Cuisine)] --> B[Input Ingredients]
-    B -->|Spoonacular API + LLM Reasoning| C[Select Recipe]
-    C -->|Spoonacular API + LLM Reasoning| D[View Missing Ingredients]
-    D -->|Telegram or Email API + LLM Reasoning| E[Receive Shopping List]
+    A["Set Preferences (Food Type, Cuisine)"] --> B["Input Ingredients"]
+    B -->|"Spoonacular API + LLM Reasoning"| C["Select Recipe"]
+    C -->|"Spoonacular API + LLM Reasoning"| D["View Missing Ingredients"]
+    D -->|"Telegram or Email API + LLM Reasoning"| E["Receive Shopping List"]
 
     style A fill:#ede7f6,stroke:#5e35b1
     style B fill:#e1f5fe,stroke:#0288d1
@@ -172,20 +172,20 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A[User Action] --> B[Decision Making Module]
-    B --> C[Perception (LLM)]
-    C --> D{LLM Self-Check Ok?}
-    D -- Error Found --> E[Show LLM Error via Action]
-    D -- No Errors --> F[Action (API Call)]
-    F --> G{API Call Success?}
-    G -- Yes --> H[Normal Flow via DecisionMaking]
-    G -- No --> I{Retry Count < Max?}
-    I -- Yes --> J[Exponential Backoff]
+    A["User Action"] --> B["Decision Making Module"]
+    B --> C["Perception (LLM)"]
+    C --> D{"LLM Self-Check Ok?"}
+    D -- "Error Found" --> E["Show LLM Error via Action"]
+    D -- "No Errors" --> F["Action (API Call)"]
+    F --> G{"API Call Success?"}
+    G -- "Yes" --> H["Normal Flow via DecisionMaking"]
+    G -- "No" --> I{"Retry Count < Max?"}
+    I -- "Yes" --> J["Exponential Backoff"]
     J --> F
-    I -- No --> K[Fallback Response / Show Error via Action]
-    E --> L{Blocking Error?}
-    L -- Yes --> M[Stop Processing]
-    L -- No --> F
+    I -- "No" --> K["Fallback Response / Show Error via Action"]
+    E --> L{"Blocking Error?"}
+    L -- "Yes" --> M["Stop Processing"]
+    L -- "No" --> F
 
     style B fill:#e3f2fd,stroke:#1e88e5
     style C fill:#f3e5f5,stroke:#7b1fa2
