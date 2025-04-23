@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Suggester</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -10,150 +9,96 @@
     <div class="container">
         <h1>Recipe Suggester</h1>
 
-        <!-- Step 1: Input Collection -->
+        <!-- Step 1: Enter Ingredients -->
         <div id="step1" class="step active">
-            <h2>What ingredients do you have?</h2>
+            <h2>What's in your fridge?</h2>
+            <div class="form-group">
+                <label for="ingredients-input">Enter ingredients (comma separated):</label>
+                <textarea id="ingredients-input" placeholder="e.g., tomatoes, onions, chicken"></textarea>
+            </div>
 
-            <!-- ** START: Added Preference Section ** -->
-            <div class="preference-section">
-                <label for="foodTypePreference">Food Preference:</label>
-                <select id="foodTypePreference" name="foodType">
-                    <option value="any" selected>Any</option>
+            <div class="form-group">
+                <label for="food-type-pref">Food Type Preference:</label>
+                <select id="food-type-pref">
+                    <option value="any">Any</option>
                     <option value="vegetarian">Vegetarian</option>
                     <option value="vegan">Vegan</option>
-                    <!-- Note: Spoonacular uses 'diet'. 'any' covers non-specific cases. -->
                 </select>
+            </div>
 
-                <label for="cuisinePreference">Cuisine Preference:</label>
-                <select id="cuisinePreference" name="cuisine">
-                    <option value="any" selected>Any</option>
-                    <option value="african">African</option>
-                    <option value="american">American</option>
-                    <option value="asian">Asian</option>
-                    <option value="british">British</option>
-                    <option value="cajun">Cajun</option>
-                    <option value="caribbean">Caribbean</option>
-                    <option value="chinese">Chinese</option>
-                    <option value="european">European</option>
-                    <option value="french">French</option>
-                    <option value="german">German</option>
-                    <option value="greek">Greek</option>
-                    <option value="indian">Indian</option>
-                    <option value="irish">Irish</option>
+            <div class="form-group">
+                <label for="cuisine-pref">Cuisine Preference:</label>
+                <select id="cuisine-pref">
+                    <option value="any">Any</option>
                     <option value="italian">Italian</option>
-                    <option value="japanese">Japanese</option>
-                    <option value="jewish">Jewish</option>
-                    <option value="korean">Korean</option>
-                    <option value="latin american">Latin American</option>
-                    <option value="mediterranean">Mediterranean</option>
                     <option value="mexican">Mexican</option>
-                    <option value="middle eastern">Middle Eastern</option>
-                    <option value="nordic">Nordic</option>
-                    <option value="southern">Southern</option>
-                    <option value="spanish">Spanish</option>
-                    <option value="thai">Thai</option>
-                    <option value="vietnamese">Vietnamese</option>
+                    <option value="asian">Asian</option>
+                    <option value="indian">Indian</option>
                 </select>
             </div>
-            <!-- ** END: Added Preference Section ** -->
 
-            <!-- ** START: Added Label for Ingredients ** -->
-            <label for="ingredients">List your ingredients (comma-separated):</label>
-            <!-- ** END: Added Label for Ingredients ** -->
-            <textarea id="ingredients" placeholder="E.g., chicken, rice, soy sauce"></textarea>
-
-            <button id="findRecipes">Find Recipes</button>
-            <div id="loading1" class="loading">
-                <div class="spinner"></div>
-                <p>Searching for recipes...</p>
-            </div>
+            <button id="find-recipes-btn" class="primary-btn">Find Recipes</button>
         </div>
 
-        <!-- Step 2: Recipe Selection -->
+        <!-- Step 2: Recipe Results -->
         <div id="step2" class="step">
-            <h2>Select a Recipe</h2>
-            <div id="recipeResults"></div>
-            <button id="backToStep1" class="back-button">Back</button>
-            <div id="loading2" class="loading">
-                <div class="spinner"></div>
-                <p>Analyzing ingredients...</p>
+            <h2>Choose a Recipe</h2>
+            <div id="recipe-results" class="recipe-container">
+                <!-- Recipe cards will be inserted here by JS -->
+            </div>
+            <div class="button-group">
+                <button id="back-to-step1-btn" class="secondary-btn">Back</button>
             </div>
         </div>
 
         <!-- Step 3: Missing Ingredients -->
         <div id="step3" class="step">
             <h2>Missing Ingredients</h2>
-            <div id="missingIngredients"></div>
+            <div id="missing-ingredients-container">
+                <!-- Missing ingredients will be inserted here by JS -->
+            </div>
+
             <h3>Send Shopping List</h3>
-            <div class="delivery-methods">
-                <div class="delivery-method">
-                    <input type="radio" id="telegram" name="delivery" value="telegram" checked>
-                    <label for="telegram">Telegram</label>
-                    <div id="telegramOptions" class="delivery-options">
-                        <input type="text" id="telegramChatId" placeholder="Telegram Chat ID">
-                        <small>First message @YourBotName, then use /start to begin. Find your Chat ID using @get_id_bot</small>
-                    </div>
-                </div>
-                <div class="delivery-method">
-                    <input type="radio" id="email" name="delivery" value="email">
-                    <label for="email">Email</label>
-                    <div id="emailOptions" class="delivery-options">
-                        <input type="email" id="emailAddress" placeholder="Email Address">
-                    </div>
+            <div class="form-group">
+                <div class="radio-group">
+                    <input type="radio" id="telegram-radio" name="delivery-method" value="telegram" checked>
+                    <label for="telegram-radio">Telegram</label>
+
+                    <input type="radio" id="email-radio" name="delivery-method" value="email">
+                    <label for="email-radio">Email</label>
                 </div>
             </div>
-            <button id="sendList">Send Shopping List</button>
-            <button id="backToStep2" class="back-button">Back</button>
-            <div id="loading3" class="loading">
-                <div class="spinner"></div>
-                <p>Sending shopping list...</p>
+
+            <div id="telegram-options" class="delivery-options">
+                <div class="form-group">
+                    <label for="telegram-chat-id">Telegram Chat ID:</label>
+                    <input type="text" id="telegram-chat-id" placeholder="e.g., 123456789">
+                </div>
+            </div>
+
+            <div id="email-options" class="delivery-options" style="display: none;">
+                <div class="form-group">
+                    <label for="email-address">Email Address:</label>
+                    <input type="email" id="email-address" placeholder="e.g., your@email.com">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="send-list-btn" class="primary-btn">Send List</button>
+                <button id="back-to-step2-btn" class="secondary-btn">Back</button>
             </div>
         </div>
 
         <!-- Step 4: Confirmation -->
         <div id="step4" class="step">
-            <h2>Shopping List Sent!</h2>
-            <p id="confirmationMessage"></p>
-            <button id="startOver">Start Over</button>
+            <h2>List Sent!</h2>
+            <p id="confirmation-message">Your shopping list has been sent.</p>
+            <button id="start-over-btn" class="primary-btn">Start Over</button>
         </div>
 
-        <!-- Error Display -->
-        <div id="error" class="error-message"></div>
-    </div>
-
-    <!-- API Key Configuration Section -->
-    <div class="config-button" id="configButton">⚙️</div>
-    <div class="config-panel" id="configPanel">
-        <h3>API Configuration</h3>
-        <div class="config-field">
-            <label for="spoonacularKey">Spoonacular API Key:</label>
-            <input type="text" id="spoonacularKey">
-        </div>
-        <div class="config-field">
-            <label for="telegramBotKey">Telegram Bot API Key:</label>
-            <input type="text" id="telegramBotKey">
-            <small>Create a bot with @BotFather in Telegram, then paste the API token here</small>
-        </div>
-        <div class="config-field">
-            <label for="sendgridKey">SendGrid API Key:</label>
-            <input type="text" id="sendgridKey">
-        </div>
-        <div class="config-field">
-            <label for="geminiKey">Gemini API Key:</label>
-            <input type="text" id="geminiKey">
-            <small>For AI-powered recipe suggestions. Get a key at <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></small>
-        </div>
-        <button id="saveConfig">Save Configuration</button>
-        <div class="help-section">
-            <h4>Telegram Setup Help</h4>
-            <ol>
-                <li>Create a bot with <a href="https://t.me/botfather" target="_blank">@BotFather</a> in Telegram</li>
-                <li>Copy the API token and paste it above</li>
-                <li>Start a chat with your new bot</li>
-                <li>Talk to <a href="https://t.me/get_id_bot" target="_blank">@get_id_bot</a> to find your Chat ID</li>
-                <li>Use this numeric Chat ID in the extension</li>
-            </ol>
-        </div>
+        <!-- Error Message Display -->
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">Loading...</div>
     </div>
 
     <script type="module" src="js/main.js"></script>

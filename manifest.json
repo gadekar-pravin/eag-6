@@ -13,17 +13,23 @@
   },
   "permissions": [
     "storage"
+    // Removed "tabs" if not strictly needed
   ],
   "host_permissions": [
-    "https://api.spoonacular.com/*",
-    "https://generativelanguage.googleapis.com/*",
-    "https://api.telegram.org/*",
-    "https://api.sendgrid.com/*"
+    // Permission to talk to the local Python backend
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+    // Remove permissions for external APIs now handled by backend:
+    // "https://api.spoonacular.com/*",
+    // "https://generativelanguage.googleapis.com/*",
+    // "https://api.telegram.org/*",
+    // "https://api.sendgrid.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    // Allow connections to the backend from the extension pages
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src http://127.0.0.1:8000 http://localhost:8000;"
   }
 }

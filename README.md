@@ -131,10 +131,10 @@ Each step maintains deep context from previous interactions, including user pref
 sequenceDiagram
     participant User
     participant Extension as "Extension (main.js)"
-    participant DecisionMaking as "DecisionMaking (decision-making.js)"
+    participant DecisionMaking as "DecisionMaking (controller.js)"
     participant Perception as "Perception (perception.js)"
     participant Action as "Action (action.js)"
-    participant Memory as "Memory (memory.js)"
+    participant Memory as "Memory (state.js)"
     participant Spoonacular
     participant DeliveryService
 
@@ -202,9 +202,9 @@ The extension's JavaScript code is modularized into distinct cognitive layers, p
 eag-assignment-6/
 ├── js/                  # JavaScript modules
 │   ├── main.js         # Entry point, UI event wiring
-│   ├── memory.js       # State management (history, API keys)
+│   ├── state.js       # State management (history, API keys)
 │   ├── perception.js   # LLM interactions (Gemini)
-│   ├── decision-making.js # Workflow logic, orchestration
+│   ├── controller.js # Workflow logic, orchestration
 │   └── action.js       # UI updates, External API calls
 ├── images/              # Icons
 ├── .gitignore
@@ -217,10 +217,10 @@ eag-assignment-6/
 
 ### Module Responsibilities
 
-*   **`main.js`**: The entry point loaded by `popup.html`. Initializes other modules, gets references to DOM elements (via `action.js`), sets up UI event listeners, and delegates event handling logic to `decision-making.js`.
-*   **`memory.js`**: Manages the application's state. It holds the `conversationHistory`, stores and retrieves API keys using `chrome.storage.sync`, and provides functions to safely access and update this state. It is the single source of truth for conversation context and configuration.
+*   **`main.js`**: The entry point loaded by `popup.html`. Initializes other modules, gets references to DOM elements (via `action.js`), sets up UI event listeners, and delegates event handling logic to `controller.js`.
+*   **`state.js`**: Manages the application's state. It holds the `conversationHistory`, stores and retrieves API keys using `chrome.storage.sync`, and provides functions to safely access and update this state. It is the single source of truth for conversation context and configuration.
 *   **`perception.js`**: Handles all direct communication with the Large Language Model (LLM - Gemini). It builds reasoning prompts, makes the API calls to the LLM, implements LLM-specific retry logic, and parses the LLM's response, extracting structured metadata (reasoning types, self-checks, errors, uncertainties).
-*   **`decision-making.js`**: Acts as the central orchestrator or "brain" of the agent. It contains the core workflow logic for each step. It receives triggers from `main.js`, retrieves state from `memory.js`, calls `perception.js` for analysis, interprets results, decides the next action (like calling an external API or updating the UI via `action.js`), and updates the state via `memory.js`.
+*   **`controller.js`**: Acts as the central orchestrator or "brain" of the agent. It contains the core workflow logic for each step. It receives triggers from `main.js`, retrieves state from `state.js`, calls `perception.js` for analysis, interprets results, decides the next action (like calling an external API or updating the UI via `action.js`), and updates the state via `state.js`.
 *   **`action.js`**: Executes all side effects – interactions with the "outside world". This includes manipulating the DOM (updating the UI, showing/hiding elements, displaying messages) and making external API calls (Spoonacular, Telegram, SendGrid), including API-specific retry logic.
 
 ### Retry and Fallback Mechanisms
@@ -246,9 +246,9 @@ The extension implements sophisticated retry and fallback logic:
 
 ### Adding Features
 The modular structure facilitates adding features:
-- Add new delivery methods by extending the UI in `popup.html`, adding API call logic in `action.js`, and updating the handling in `decision-making.js`.
+- Add new delivery methods by extending the UI in `popup.html`, adding API call logic in `action.js`, and updating the handling in `controller.js`.
 - Enhance reasoning by modifying prompt templates in `perception.js`.
-- Add new state variables by updating `memory.js`.
+- Add new state variables by updating `state.js`.
 
 ## Limitations
 
@@ -256,5 +256,5 @@ The modular structure facilitates adding features:
 - Preference filtering relies on Spoonacular's API parameters, which might not cover all cuisines or dietary nuances perfectly.
 - Free API tiers have usage limits.
 - LLM (Gemini) API may have occasional downtime or rate limits.
-- Ingredient matching logic (`decision-making.js`) is basic and may not perfectly handle all variations (e.g., "onion" vs "red onion").
+- Ingredient matching logic (`controller.js`) is basic and may not perfectly handle all variations (e.g., "onion" vs "red onion").
 
